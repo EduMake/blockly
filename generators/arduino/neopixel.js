@@ -7,68 +7,60 @@
 //define blocks
 if (!Blockly.Language) Blockly.Language = {};
 
+Blockly.Arduino.setStripLength = function(str_length)
+{
+    var strip_length =  parseInt(str_length, 10);
+    
+    if(typeof Blockly.Arduino.strippin_ === "undefined")
+    {
+        // TODO : Throw an error / hint to the user.
+        Blockly.Arduino.strippin_ = 1 ;
+    }
+    
+    if(typeof Blockly.Arduino.striplen_ === "undefined")
+    {
+        Blockly.Arduino.definitions_['Adafruit_NeoPixel_include'] = "#include <Adafruit_NeoPixel.h>";
+        Blockly.Arduino.striplen_ = strip_length;    
+    }
+    else if(Blockly.Arduino.striplen_ > strip_length)
+    {
+        Blockly.Arduino.striplen_ = strip_length;    
+    }    
+    
+    // TODO : Choose the NEO pixel type from a V1 / V2 etc dropdown
+    Blockly.Arduino.definitions_['Adafruit_NeoPixel'] = "Adafruit_NeoPixel strip = Adafruit_NeoPixel("+Blockly.Arduino.striplen_+", "+Blockly.Arduino.strippin_+", NEO_GRB + NEO_KHZ800);";  
 
+}
 
 Blockly.Arduino['neopixels_attach'] = function(block) {
   var text_neo_pixel_length = block.getFieldValue('NEO_PIXEL_LENGTH');
   var dropdown_pin = block.getFieldValue('PIN');
   
-  Blockly.Arduino.definitions_['Adafruit_NeoPixel_imclude'] = "#include <Adafruit_NeoPixel.h>";
+  // TODO : Allow more than 1 strip
+  Blockly.Arduino.strippin_ = dropdown_pin;
+  Blockly.Arduino.setStripLength(text_neo_pixel_length);
   
-  Blockly.Arduino.definitions_['Adafruit_NeoPixel'] = "Adafruit_NeoPixel strip = Adafruit_NeoPixel("+text_neo_pixel_length+", "+dropdown_pin+", NEO_GRB + NEO_KHZ800);";
-  
-  
-  // TODO: Assemble JavaScript into code variable.
   var code = "";
   return code;
 };
 
-function hexToRgb(hex) {
-    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-        return r + r + g + g + b + b;
-    });
-
-    var result = /^\'?#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})\'?$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : {r:0, g:0, b:0};
-}
-
-
-
 Blockly.Arduino['neopixel_set'] = function(block) {
-  var text_pixel_number = block.getFieldValue('pixel_number');
-  
-  // tODO : if they aren't set
-  /*  Blockly.Arduino.definitions_['Adafruit_NeoPixel_imclude'] = "#include <Adafruit_NeoPixel.h>";
-  // TODO  :check the current lenght and if one being set is longer then extend the strip
-  Blockly.Arduino.definitions_['Adafruit_NeoPixel'] = "Adafruit_NeoPixel strip = Adafruit_NeoPixel("+text_neo_pixel_length+", "+dropdown_pin+", NEO_GRB + NEO_KHZ800);";
-  */
+  var pixel_number = parseInt(block.getFieldValue('pixel_number'), 10);
+  Blockly.Arduino.setStripLength(pixel_number + 1);
   
   var value_colour = Blockly.Arduino.valueToCode(block, 'COLOUR', Blockly.Arduino.ORDER_ATOMIC);
-  var colour_array= hexToRgb(value_colour);
-  
-  // TODO: Assemble JavaScript into code variable.
-  var code = "strip.setPixelColor("+text_pixel_number+","+colour_array.r+","+colour_array.g+","+colour_array.b+");\n";
-  //var code = "strip.setPixelColor("+text_pixel_number+","+colour_array.r+","+colour_array.g+","+colour_array.b+");";
+  var code = "strip.setPixelColor("+pixel_number+","+value_colour+");\n";
   
   return code;
 };
 
 
 Blockly.Arduino['neopixel_eye_set'] = function(block) {
-  var text_pixel_number = block.getFieldValue('pixel_number');
-  
+    var pixel_number = parseInt(block.getFieldValue('pixel_number'), 10);
+    
+  Blockly.Arduino.setStripLength(pixel_number + 1);
   var value_colour = Blockly.Arduino.valueToCode(block, 'COLOUR', Blockly.Arduino.ORDER_ATOMIC);
-  var colour_array= hexToRgb(value_colour);
-  
-  // TODO: Assemble JavaScript into code variable.
-  var code = "strip.setPixelColor("+text_pixel_number+","+colour_array.r+","+colour_array.g+","+colour_array.b+");\n";
-  //var code = "strip.setPixelColor("+text_pixel_number+","+colour_array.r+","+colour_array.g+","+colour_array.b+");";
+  var code = "strip.setPixelColor("+pixel_number+","+value_colour+");\n";
   
   return code;
 };
@@ -76,43 +68,20 @@ Blockly.Arduino['neopixel_eye_set'] = function(block) {
 
 
 Blockly.Arduino['neopixels_set'] = function(block) {
-  // tODO : if they aren't set
-  /*  Blockly.Arduino.definitions_['Adafruit_NeoPixel_imclude'] = "#include <Adafruit_NeoPixel.h>";
-  // TODO  :check the current lenght and if one being set is longer then extend the strip
-  Blockly.Arduino.definitions_['Adafruit_NeoPixel'] = "Adafruit_NeoPixel strip = Adafruit_NeoPixel("+text_neo_pixel_length+", "+dropdown_pin+", NEO_GRB + NEO_KHZ800);";
-  */
+  Blockly.Arduino.setStripLength(1);
   
   var value_colour = Blockly.Arduino.valueToCode(block, 'COLOUR', Blockly.Arduino.ORDER_ATOMIC);
-  var colour_array= hexToRgb(value_colour);
-  
-  // TODO: Assemble JavaScript into code variable.
-  // TODO : fix
-  var code = "strip.set("+colour_array.r+","+colour_array.g+","+colour_array.b+");\n";
-  //var code = "strip.setPixelColor("+text_pixel_number+","+colour_array.r+","+colour_array.g+","+colour_array.b+");";
+  var code = "strip.set("+value_colour+");\n";
   
   return code;
 };
 
-
-
-
-
-
 Blockly.Arduino['neopixels_wipe'] = function(block) {
   var text_wipe_time = block.getFieldValue('wipe_time');
-  
-  // tODO : if they aren't set
-  /*  Blockly.Arduino.definitions_['Adafruit_NeoPixel_imclude'] = "#include <Adafruit_NeoPixel.h>";
-  // TODO  :check the current lenght and if one being set is longer then extend the strip
-  Blockly.Arduino.definitions_['Adafruit_NeoPixel'] = "Adafruit_NeoPixel strip = Adafruit_NeoPixel("+text_neo_pixel_length+", "+dropdown_pin+", NEO_GRB + NEO_KHZ800);";
-  */
+  Blockly.Arduino.setStripLength(1);
   
   var value_colour = Blockly.Arduino.valueToCode(block, 'COLOUR', Blockly.Arduino.ORDER_ATOMIC);
-  var colour_array= hexToRgb(value_colour);
-  
-  // TODO: Assemble JavaScript into code variable.
-  var code = "strip.wipe("+colour_array.r+","+colour_array.g+","+colour_array.b+","+text_wipe_time+");\n";
-  //var code = "strip.setPixelColor("+text_pixel_number+","+colour_array.r+","+colour_array.g+","+colour_array.b+");";
+  var code = "strip.wipe("+value_colour+","+text_wipe_time+");\n";
   
   return code;
 };
