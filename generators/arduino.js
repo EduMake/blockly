@@ -143,8 +143,6 @@ Blockly.Arduino.finish = function(code) {
     var varName = Blockly.Arduino.variableDB_.getName(variables[x],
         Blockly.Variables.NAME_TYPE);
   
-  console.log("finish Blockly.Arduino.variableTypes_ =", Blockly.Arduino.variableTypes_);
-    
     var varType = "int";
     if(typeof Blockly.Arduino.variableTypes_ !== "undefined" && Blockly.Arduino.variableTypes_[varName])
     {
@@ -193,7 +191,7 @@ Blockly.Arduino.finish = function(code) {
  * @return {string} Legal line of code.
  */
 Blockly.Arduino.scrubNakedValue = function(line) {
-  return line + ';\n';
+  return "//"+line + '\n';
 };
 
 /**
@@ -247,3 +245,4 @@ Blockly.Arduino.scrub_ = function(block, code) {
   var nextCode = Blockly.Arduino.blockToCode(nextBlock);
   return commentCode + code + nextCode;
 };
+
