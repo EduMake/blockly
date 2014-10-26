@@ -29,11 +29,12 @@ goog.require('Blockly.Arduino');
 
 Blockly.Arduino.colour_picker = function() {
   // Colour picker.
-  var code = '\'' + this.getFieldValue('COLOUR') + '\'';
+  var code = '0x' + this.getFieldValue('COLOUR').replace("#","") + 'UL';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
 Blockly.Arduino.colour_rgb = function() {
+    // TODO : 
   // Compose a colour from RGB components.
   var red = Blockly.Arduino.valueToCode(this, 'RED',
       Blockly.Arduino.ORDER_NONE) || 0;
@@ -42,33 +43,10 @@ Blockly.Arduino.colour_rgb = function() {
   var blue = Blockly.Arduino.valueToCode(this, 'BLUE',
       Blockly.Arduino.ORDER_NONE) || 0;
 
-  if (!Blockly.Arduino.definitions_['colour_rgb']) {
-    Blockly.Arduino.definitions_['import_dart_math'] =
-        'import \'dart:math\' as Math;';
-    var functionName = Blockly.Arduino.variableDB_.getDistinctName(
-        'colour_rgb', Blockly.Generator.NAME_TYPE);
-    Blockly.Arduino.colour_rgb.functionName = functionName;
-    var func = [];
-    func.push('String ' + functionName + '(r, g, b) {');
-    func.push('  String rs = (Math.max(Math.min(r, 1), 0) * 255).round()' +
-              '.toRadixString(16);');
-    func.push('  String gs = (Math.max(Math.min(g, 1), 0) * 255).round()' +
-              '.toRadixString(16);');
-    func.push('  String bs = (Math.max(Math.min(b, 1), 0) * 255).round()' +
-              '.toRadixString(16);');
-    func.push('  rs = \'0$rs\';');
-    func.push('  rs = rs.substring(rs.length - 2);');
-    func.push('  gs = \'0$gs\';');
-    func.push('  gs = gs.substring(gs.length - 2);');
-    func.push('  bs = \'0$bs\';');
-    func.push('  bs = bs.substring(bs.length - 2);');
-    func.push('  return \'#$rs$gs$bs\';');
-    func.push('}');
-    Blockly.Arduino.definitions_['colour_rgb'] = func.join('\n');
-  }
-  var code = Blockly.Arduino.colour_rgb.functionName +
-      '(' + red + ', ' + green + ', ' + blue + ')';
-  return [code, Blockly.Arduino.ORDER_UNARY_POSTFIX];
+  
+  var code = 'strip.Color(' + red + ', ' + green + ', ' + blue + ')';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+  
 };
 
 Blockly.Arduino.colour_blend = function() {
