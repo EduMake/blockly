@@ -9,17 +9,21 @@ if (!Blockly.Language) Blockly.Language = {};
 
 Blockly.Arduino.setStripLength = function(str_length)
 {
+    Blockly.Arduino.addSetup("neopixel_start", "strip.begin();\nstrip.show(); // Initialize all pixels to 'off'\n");
+    Blockly.Arduino.definitions_['Adafruit_NeoPixel_include'] = "#include <Adafruit_NeoPixel.h>";
+    
     var strip_length =  parseInt(str_length, 10);
     
     if(typeof Blockly.Arduino.strippin_ === "undefined")
     {
+        
         // TODO : Throw an error / hint to the user.
         Blockly.Arduino.strippin_ = 1 ;
     }
     
     if(typeof Blockly.Arduino.striplen_ === "undefined")
     {
-        Blockly.Arduino.definitions_['Adafruit_NeoPixel_include'] = "#include <Adafruit_NeoPixel.h>";
+        
         Blockly.Arduino.striplen_ = strip_length;    
     }
     else if(Blockly.Arduino.striplen_ > strip_length)
@@ -41,6 +45,12 @@ Blockly.Arduino['neopixels_attach'] = function(block) {
   Blockly.Arduino.setStripLength(text_neo_pixel_length);
   
   var code = "";
+  return code;
+};
+
+
+Blockly.Arduino['neopixels_show'] = function(block) {
+  var code = 'strip.show();\n';
   return code;
 };
 
@@ -97,8 +107,8 @@ Blockly.Language.neopixel_read = {
   init: function() {
     this.setColour(230);
 	this.appendDummyInput("")
-	    .appendTitle("NeopixelRead PIN#")
-	    .appendTitle(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+	    .appendField("NeopixelRead PIN#")
+	    .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
     this.setOutput(true, Boolean);
     this.setTooltip('input block');
   }
@@ -110,14 +120,14 @@ Blockly.Language.neopixel_write = {
   init: function() {
     this.setColour(190);
     this.appendDummyInput("")
-  .appendTitle("NeoPixel RGB LED")
-        .appendTitle(new Blockly.FieldImage("http://www.seeedstudio.com/depot/images/product/chanbalelednb1.jpg", 64, 64))
-  .appendTitle("PIN#")
-        .appendTitle(new Blockly.FieldDropdown(profile.default.digital), "PIN")
+  .appendField("NeoPixel RGB LED")
+        .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/depot/images/product/chanbalelednb1.jpg", 64, 64))
+  .appendField("PIN#")
+        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
     this.appendDummyInput("COLOR0")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendTitle("Color 1")
-        .appendTitle(new Blockly.FieldColour("#00ff00"), "RGB0");
+        .appendField("Color 1")
+        .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
     this.setMutator(new Blockly.Mutator(['neopixel_item']));
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -144,15 +154,15 @@ Blockly.Language.neopixel_write = {
       var input = this.appendDummyInput('COLOR' + x);
       //if (x == 0) {
         input.setAlign(Blockly.ALIGN_RIGHT)
-             .appendTitle("Color "+(x+1))
-             .appendTitle(new Blockly.FieldColour(color), "RGB" + x);
+             .appendField("Color "+(x+1))
+             .appendField(new Blockly.FieldColour(color), "RGB" + x);
       //}
     }
     if (this.itemCount_ == 0) {
       this.appendDummyInput('COLOR0')
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendTitle("Color 1")
-          .appendTitle(new Blockly.FieldColour("#00ff00"), "RGB0");
+          .appendField("Color 1")
+          .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
     }
   },
   decompose: function(workspace) {
@@ -194,8 +204,8 @@ Blockly.Language.neopixel_write = {
       var input = this.appendDummyInput('COLOR' + this.itemCount_);
       //if (this.itemCount_ == 0) {
         input.setAlign(Blockly.ALIGN_RIGHT)
-             .appendTitle("Color " + (this.itemCount_+1))
-             .appendTitle(new Blockly.FieldColour(colour_rgb), "RGB" + this.itemCount_);
+             .appendField("Color " + (this.itemCount_+1))
+             .appendField(new Blockly.FieldColour(colour_rgb), "RGB" + this.itemCount_);
       //}
       // Reconnect any child blocks.
       if (itemBlock.valueConnection_) {
@@ -208,8 +218,8 @@ Blockly.Language.neopixel_write = {
     if (this.itemCount_ == 0) {
       this.appendDummyInput('COLOR0')
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendTitle("Color 1")
-          .appendTitle(new Blockly.FieldColour("#00ff00"), "RGB0");
+          .appendField("Color 1")
+          .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
     }
   },
   //saveConnections: function(containerBlock) {
@@ -231,7 +241,7 @@ Blockly.Language.neopixel_container = {
   init: function() {
     this.setColour(190);
     this.appendDummyInput()
-        .appendTitle("Container");
+        .appendField("Container");
     this.appendStatementInput('STACK');
     this.setTooltip("Add, remove items to reconfigure this chain");
     this.contextMenu = false;
@@ -243,7 +253,7 @@ Blockly.Language.neopixel_item = {
   init: function() {
     this.setColour(190);
     this.appendDummyInput()
-        .appendTitle("Item");
+        .appendField("Item");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip("Add an item to the chain");
@@ -260,10 +270,10 @@ Blockly.Language.neopixel_write = {
   init: function() {
     this.setColour(230);
 	this.appendDummyInput("")
-	    .appendTitle("NeopixelWrite PIN#")
-	    .appendTitle(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/e/e0/LED1.jpg/400px-LED1.jpg", 64, 64))
-	    .appendTitle(new Blockly.FieldDropdown(profile.default.analog), "PIN")
-	    .appendTitle("value");
+	    .appendField("NeopixelWrite PIN#")
+	    .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/e/e0/LED1.jpg/400px-LED1.jpg", 64, 64))
+	    .appendField(new Blockly.FieldDropdown(profile.default.analog), "PIN")
+	    .appendField("value");
 	this.appendValueInput("NUM", Number);
 	this.setInputsInline(true);
     this.setPreviousStatement(true, null);

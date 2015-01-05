@@ -47,6 +47,19 @@ Blockly.Blocks['neopixels_attach'] = {
 };
 
 
+
+Blockly.Blocks['neopixels_show'] = {
+  init: function() {
+    this.setHelpUrl('http://www.example.com/');
+    this.setColour(120);
+    this.appendDummyInput()
+        .appendField("Update the Pixels");
+    this.setPreviousStatement(true, "null");
+    this.setNextStatement(true, "null");
+    this.setTooltip('Show the lights you just chenged');
+  }
+};
+
 Blockly.Blocks['neopixel_set'] = {
   init: function() {
     this.setHelpUrl('http://www.example.com/');

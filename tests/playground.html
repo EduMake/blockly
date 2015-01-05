@@ -41,7 +41,11 @@
 <script type="text/javascript" src="../generators/arduino/variables.js"></script>
 <script type="text/javascript" src="../generators/arduino/procedures.js"></script>
 
+
 <script type="text/javascript" src="../generators/arduino/neopixel.js"></script>
+<script type="text/javascript" src="../generators/arduino/waiting.js"></script>
+
+<script type="text/javascript" src="../generators/arduino/io.js"></script>
 
 <script type="text/javascript" src="../msg/messages.js"></script>
 <script type="text/javascript" src="../blocks/logic.js"></script>
@@ -55,6 +59,9 @@
 
 
 <script type="text/javascript" src="../blocks/neopixel.js"></script>
+<script type="text/javascript" src="../blocks/waiting.js"></script>
+
+<script type="text/javascript" src="../blocks/io.js"></script>
 
 <!-- Load the Google Drive SDK Realtime libraries. -->
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
@@ -206,6 +213,33 @@ h1 {
       <block type="controls_forEach"></block>
       <block type="controls_flow_statements"></block>
     </category>
+    <category name="Waiting">
+      <block type="base_delay"></block>
+    </category>  
+    
+    
+    <category name="Input &amp; Output">
+      <block type="pin_level"></block>
+      <block type="pin_level_easy"></block>
+      <block type="pin_level_boolean"></block>
+      <block type="inout_buildin_led"></block>
+      <block type="inout_digital_write">
+        <field name="PIN">1</field>
+        <value name="STAT">
+          <block type="pin_level_easy">
+            <field name="level">HIGH</field>
+          </block>
+      
+      </block>
+      
+      <block type="inout_digital_read"></block>
+      <!--<block type="inout_analog_write"></block>
+      <block type="inout_analog_read"></block>
+      <block type="inout_highlow"></block>
+      
+      -->
+    </category>  
+    
     <category name="Math">
       <block type="math_number"></block>
       <block type="math_arithmetic"></block>
